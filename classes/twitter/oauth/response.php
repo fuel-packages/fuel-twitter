@@ -13,23 +13,36 @@ namespace Twitter;
 
 class Twitter_Oauth_Response {
 	
-	private $__construct;
-
+	/**
+	 * Response
+	 */
+	public $__resp;
+	
+	/**
+	 * Constructor
+	 *
+	 * @param	object	response object
+	 */
 	public function __construct($resp)
 	{
 		$this->__resp = $resp;
 
-		if ( strpos($this->__resp->type, 'json') !== FALSE )
+		if (strpos($this->__resp->type, 'json') !== false)
 		{
 			$this->__resp->data = json_decode($this->__resp->data);
 		}
 	}
 
+	/**
+	 * Rerouted acces to a value from the response data.
+	 *
+	 * @param	string		key to get from the response data
+	 */
 	public function __get($name)
 	{
-		if ($this->__resp->code < 200 || $this->__resp->code > 299) return FALSE;
+		if ($this->__resp->code < 200 or $this->__resp->code > 299) return false;
 		
-		if ( is_string($this->__resp->data ) )
+		if (is_string($this->__resp->data))
 		{
 			parse_str($this->__resp->data, $result);
 		}
@@ -43,7 +56,7 @@ class Twitter_Oauth_Response {
 			$this->$k = $v;
 		}
 		
-		if ( $name === '_result')
+		if ($name === '_result')
 		{
 			return $result;
 		}
