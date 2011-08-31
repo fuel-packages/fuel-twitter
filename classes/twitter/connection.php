@@ -14,7 +14,7 @@ namespace Twitter;
 class Twitter_Connection {
 	
 	/**
-	 * Curl Munti
+	 * Multi Curl
 	 */	
 	protected $_mch = null;
 	
