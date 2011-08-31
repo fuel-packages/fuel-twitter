@@ -16,7 +16,7 @@ class Twitter_Oauth_Response {
 	/**
 	 * Response
 	 */
-	public $__reps;
+	public $__resp;
 	
 	/**
 	 * Constructor
