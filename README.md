@@ -50,7 +50,7 @@ if (Twitter::logged_in())
 Starts the login process.  Sends a request to the Twitter Oauth to log you in.
 
 ```php
-if (Twitter::logged_in())
+if ( ! Twitter::logged_in())
 {
 	Twitter::login();
 }
