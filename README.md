@@ -100,7 +100,16 @@ Makes a POST request to the Twitter API using the given API path and args.  See 
 $result = Twitter::post('statuses/update', array('status' => 'Using this new awesome cool Twitter package for Fuel!'));
 ```
 
-## Example Login Contoller:
+### Twitter::seearch($args)
+
+Sends a request to the Twitter Search API with the given arguments.
+
+```php
+// Gets all the tweets with the hashtag of #fuelphp
+Twitter::search(array('q' => urlencode('#fuelphp')));
+```
+
+## Example Login Controller:
 
 ```php
 <?php
