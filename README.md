@@ -3,7 +3,7 @@
 
 This is a port of Elliot Haughin's CodeIgniter Twitter library.
 
-You can find his library here [](http://www.haughin.com/code/twitter/)
+You can find his library here [http://www.haughin.com/code/twitter/](http://www.haughin.com/code/twitter/)
 
 ## Example Contoller:
 
