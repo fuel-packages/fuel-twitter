@@ -4,13 +4,11 @@ A super simple Twitter package for Fuel.  This is based off of Elliot Haughin's 
 
 ## About
 
-Version: 1.0
-License: MIT License
-Author: Dan Horrigan
-CI Library Author: Elliot Haughin
-Original URL: [http://www.haughin.com/code/twitter/](http://www.haughin.com/code/twitter/)
-
-You can find his library here 
+* Version: 1.0
+* License: MIT License
+* Author: Dan Horrigan
+* CI Library Author: Elliot Haughin
+* Original URL: [http://www.haughin.com/code/twitter/](http://www.haughin.com/code/twitter/)
 
 ## Installation
 
