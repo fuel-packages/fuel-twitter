@@ -119,30 +119,6 @@ class Twitter_Oauth {
 	}
 
 	/**
-	 * Sends a PUT request to the twitter API.
-	 *
-	 * @param   string  $path  The API URI
-	 * @param   array   $args  An array of arguments to send
-	 * @return  mixed
-	 */
-	public function put($path, $args = null)
-	{
-		return $this->http_request('PUT', $this->api_url.'/'.$path.'.json', $args);
-	}
-
-	/**
-	 * Sends a DELETE request to the twitter API.
-	 *
-	 * @param   string  $path  The API URI
-	 * @param   array   $args  An array of arguments to send
-	 * @return  mixed
-	 */
-	public function delete($path, $args = null)
-	{
-		return $this->http_request('DELETE', $this->api_url.'/'.$path.'.json', $args);
-	}
-
-	/**
 	 * Sends a search request to the Twitter Search API.
 	 *
 	 * @param   array  $args  The search arguments
