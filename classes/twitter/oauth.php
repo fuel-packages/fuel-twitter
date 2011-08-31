@@ -240,27 +240,59 @@ class Twitter_Oauth {
 		return $this->tokens;
 	}
 	
+	/**
+	 * Gets the Consumer Key
+	 *
+	 * @return  string  The Consumer Key
+	 */
 	public function get_consumer_key()
 	{
 		return $this->tokens['consumer_key'];
 	}
 	
+	/**
+	 * Gets the Consumer Secret
+	 *
+	 * @return  string  The Consumer Secret
+	 */
 	public function get_consumer_secret()
 	{
 		return $this->tokens['consumer_secret'];
 	}
 	
+	/**
+	 * Gets the Access Key from the Session.
+	 *
+	 * @return  string|null  The Access Key
+	 */
 	public function get_access_key()
 	{
 		$tokens = \Session::get('twitter_oauthtokens');
-		return ( $tokens === null || !isset($tokens['access_key']) || empty($tokens['access_key']) ) ? null : $tokens['access_key'];
+		return ($tokens === null || ! isset($tokens['access_key']) || empty($tokens['access_key'])) ? null : $tokens['access_key'];
+	}
+
+	/**
+	 * Gets the Access Secret from the Session.
+	 *
+	 * @return  string|null  The Access Secret
+	 */
+	public function get_access_secret()
+	{
+		$tokens = \Session::get('twitter_oauthtokens');
+		return ($tokens === false || ! isset($tokens['access_secret']) || empty($tokens['access_secret'])) ? null : $tokens['access_secret'];
 	}
 	
+	/**
+	 * Sets the access key in the session
+	 *
+	 * @param   string  $access_key  The access key
+	 * @return  $this
+	 */
 	public function set_access_key($access_key)
 	{
 		$tokens = \Session::get('twitter_oauthtokens');
 		
-		if ( $tokens === false || !is_array($tokens) )
+		if ($tokens === false || ! is_array($tokens))
 		{
 			$tokens = array('access_key' => $access_key);
 		}
@@ -270,19 +302,21 @@ class Twitter_Oauth {
 		}
 		
 		\Session::set('twitter_oauthtokens', $tokens);
+
+		return $this;
 	}
-	
-	public function get_access_secret()
-	{
-		$tokens = \Session::get('twitter_oauthtokens');
-		return ( $tokens === false || !isset($tokens['access_secret']) || empty($tokens['access_secret']) ) ? null : $tokens['access_secret'];
-	}
-	
+
+	/**
+	 * Sets the access secret in the session
+	 *
+	 * @param   string  $access_secret  The access secret
+	 * @return  $this
+	 */
 	public function set_access_secret($access_secret)
 	{
 		$tokens = \Session::get('twitter_oauthtokens');
 		
-		if ( $tokens === false || !is_array($tokens) )
+		if ($tokens === false || ! is_array($tokens))
 		{
 			$tokens = array('access_secret' => $access_secret);
 		}
@@ -292,38 +326,81 @@ class Twitter_Oauth {
 		}
 		
 		\Session::set('twitter_oauthtokens', $tokens);
+
+		return $this;
 	}
-	
+
+	/**
+	 * Sets the access tokens.
+	 *
+	 * Expects: array('oauth_token' => '', 'oauth_token_secret' => '')
+	 *
+	 * @param   array  $tokens  The access tokens
+	 * @return  $this
+	 */
 	public function set_access_tokens($tokens)
 	{
 		$this->set_access_key($tokens['oauth_token']);
 		$this->set_access_secret($tokens['oauth_token_secret']);
+
+		return $this;
 	}
-	
+
+	/**
+	 * Gets the authentication URL
+	 *
+	 * @return  string  The authentication URL
+	 */
 	public function get_auth_url()
 	{
 		$token = $this->get_request_token();
-		return $this->auth_url.'?oauth_token=' . $token->oauth_token;
+		return $this->auth_url.'?oauth_token='.$token->oauth_token;
 	}
 	
+	/**
+	 * Gets the request token from Twitter
+	 *
+	 * @return  string  The request token
+	 */
 	protected function get_request_token()
 	{
 		return $this->http_request('GET', $this->request_token_url);
 	}
 	
+	/**
+	 * Gets the access token from Twitter
+	 *
+	 * @return  string  The access token
+	 */
 	protected function get_access_token()
 	{
 		return $this->http_request('GET', $this->access_token_url);
 	}
-	
+
+	/**
+	 * Sends the request to Twitter and returns the response.
+	 *
+	 * @param   string  $method  The HTTP method
+	 * @param   string  $url     The URL of the request
+	 * @param   array   $params  The request parameters
+	 * @return  mixed   The response
+	 */
 	protected function http_request($method = null, $url = null, $params = null)
 	{
-		if( empty($method) || empty($url) ) return false;
-		if ( empty($params['oauth_signature']) ) $params = $this->prep_params($method, $url, $params);
+		if (empty($method) || empty($url))
+		{
+			return false;
+		}
+
+		if (empty($params['oauth_signature']))
+		{
+			$params = $this->prep_params($method, $url, $params);
+		}
 
 		$this->connection = new \Twitter_Connection();
 
-		try {
+		try
+		{
 			switch ($method)
 			{
 				case 'GET':
@@ -342,44 +419,67 @@ class Twitter_Oauth {
 					return null;
 				break;
 			}
-		} catch (\TwitterException $e) {
+		}
+		catch (\TwitterException $e)
+		{
 			$this->errors[] = $e;
 		}
 	}
-	
+
+	/**
+	 * Gets the callback URL.
+	 *
+	 * @return  string  The callback URL
+	 */
 	public function get_callback()
 	{
 		return $this->callback;
 	}
-	
+
+	/**
+	 * Sets the callback URL.
+	 *
+	 * @param   string  $url  The callback URL
+	 * @return  $this
+	 */
 	public function set_callback($url)
 	{
 		$this->callback = $url;
+		return $this;
 	}
-	
+
+	/**
+	 * Generates the parameters needed for a request.
+	 *
+	 * @param   string  $method  The HTTP method
+	 * @param   string  $url     The URL of the request
+	 * @param   array   $params  The request parameters
+	 * @return  array   The params
+	 */
 	protected function prep_params($method = null, $url = null, $params = null)
 	{
-		if ( empty($method) || empty($url) ) return false;
+		if (empty($method) || empty($url))
+		{
+			return false;
+		}
 		
-		$callback = $this->get_callback();
-		
-		if ( !empty($callback) )
+		if ( ! empty($callback = $this->get_callback()))
 		{
 			$oauth['oauth_callback'] = $callback;
 		}
 		
 		$this->set_callback(null);
 		
-		$oauth['oauth_consumer_key'] 		= $this->get_consumer_key();
-		$oauth['oauth_token'] 				= $this->get_access_key();
-		$oauth['oauth_nonce'] 				= $this->generate_nonce();
-		$oauth['oauth_timestamp'] 			= time();
-		$oauth['oauth_signature_method'] 	= $this->signature_method;
-		$oauth['oauth_version'] 			= $this->version;
+		$oauth['oauth_consumer_key']      = $this->get_consumer_key();
+		$oauth['oauth_token']             = $this->get_access_key();
+		$oauth['oauth_nonce']             = $this->generate_nonce();
+		$oauth['oauth_timestamp']         = time();
+		$oauth['oauth_signature_method']  = $this->signature_method;
+		$oauth['oauth_version']           = $this->version;
 		
 		array_walk($oauth, array($this, 'encode_rfc3986'));
 		
-		if ( is_array($params) )
+		if (is_array($params))
 		{
 			array_walk($params, array($this, 'encode_rfc3986'));
 		}
@@ -392,6 +492,11 @@ class Twitter_Oauth {
 		return array('request' => $params, 'oauth' => $oauth);
 	}
 
+	/**
+	 * Generates a security nonce
+	 *
+	 * @return  string  The nonce
+	 */
 	protected function generate_nonce()
 	{
 		return md5(uniqid(rand(), true));
