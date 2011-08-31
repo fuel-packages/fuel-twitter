@@ -34,36 +34,16 @@ class Twitter {
 	
 	private function __construct() { }
 	
-	public static function logged_in()
-	{
-		return static::$oauth->loggedIn();
-	}
-	
-	public static function set_callback($url)
-	{
-		static::$oauth->setCallback($url);
-	}
-	
-	public static function login()
-	{
-		return static::$oauth->login();
-	}
-	
-	public static function logout()
-	{
-		return static::$oauth->logout();
-	}
-	
 	public static function get_tokens()
 	{
 		return array(
-			'oauth_token' => static::$oauth->getAccessKey(),
-			'oauth_token_secret' => static::$oauth->getAccessSecret()
+			'oauth_token' => static::$oauth->get_access_key(),
+			'oauth_token_secret' => static::$oauth->get_access_secret()
 		);
 	}
 	
 	public static function set_tokens($tokens)
 	{
-		return static::$oauth->setAccessTokens($tokens);
+		return static::$oauth->set_access_tokens($tokens);
 	}
 }

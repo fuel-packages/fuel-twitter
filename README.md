@@ -5,7 +5,7 @@ This is a port of Elliot Haughin's CodeIgniter Twitter library.
 
 You can find his library here [http://www.haughin.com/code/twitter/](http://www.haughin.com/code/twitter/)
 
-## Example Contoller:
+## Example Login Contoller:
 
 ```php
 <?php
@@ -37,6 +37,8 @@ class Controller_Twitter extends Controller {
 		$tokens = Twitter::get_tokens();
 		$twitter_user = Twitter::call('get', 'account/verify_credentials');
 
+		// Update or create the user.  We update every time a user logs in
+		// so that if they update their profile, we get that update.
 		$user = Model_User::find_by_screen_name($twitter_user->screen_name);
 		if ( ! $user)
 		{
