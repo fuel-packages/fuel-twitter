@@ -13,11 +13,24 @@ namespace Twitter;
 
 class Twitter_Connection {
 	
-	// Allow multi-threading.
+	/**
+	 * Curl Munti
+	 */	
+	protected $_mch = null;
 	
-	private $_mch = NULL;
-	private $_properties = array();
+	/**
+	 * Curl
+	 */	
+	protected $_ch = null;
 	
+	/**
+	 * Propperties
+	 */
+	protected $_properties = array();
+	
+	/**
+	 * Constructor
+	 */
 	public function __construct()
 	{
 		$this->_mch = curl_multi_init();
@@ -30,74 +43,89 @@ class Twitter_Connection {
 		);
 	}
 	
-	private function _initConnection($url)
+	/**
+	 * Initiates a Curl connection
+	 *
+	 * @param	string		$url	url to connect to
+	 */
+	protected function init_connection($url)
 	{
 		$this->_ch = curl_init($url);
-		curl_setopt($this->_ch, CURLOPT_RETURNTRANSFER, TRUE);
+		curl_setopt($this->_ch, CURLOPT_RETURNTRANSFER, true);
 	}
 	
+	/**
+	 * Executes a curl request using get
+	 *
+	 * @param	string	$url		url to connect to
+	 * @param	array	$params		connection/request parameters
+	 *
+	 */
 	public function get($url, $params)
 	{
-		if ( count($params['request']) > 0 )
-		{
-			$url .= '?';
+		$post = http_build_query($params['request'], '', '&');
 		
-			foreach( $params['request'] as $k => $v )
-			{
-				$url .= "{$k}={$v}&";
-			}
-			
-			$url = substr($url, 0, -1);
-		}
-		
-		$this->_initConnection($url);
-		$response = $this->_addCurl($url, $params);
-
+		$this->init_connection($url);
+		$response = $this->add_curl($url, $params);
+	    
 	    return $response;
 	}
 	
+	/**
+	 * Executes a curl request using get
+	 *
+	 * @param	string	$url		url to connect to
+	 * @param	array	$params		connection/request parameters
+	 *
+	 */
 	public function post($url, $params)
 	{
-		// Todo
-		$post = '';
+		$post = http_build_query($params['request'], '', '&');
 		
-		foreach ( $params['request'] as $k => $v )
-		{
-			$post .= "{$k}={$v}&";
-		}
-		
-		$post = substr($post, 0, -1);
-		
-		$this->_initConnection($url, $params);
+		$this->init_connection($url, $params);
 		curl_setopt($this->_ch, CURLOPT_POST, 1);
 		curl_setopt($this->_ch, CURLOPT_POSTFIELDS, $post);
 		
-		$response = $this->_addCurl($url, $params);
+		$response = $this->add_curl($url, $params);
 
 	    return $response;
 	}
 	
-	private function _addOauthHeaders(&$ch, $url, $oauthHeaders)
+	/**
+	 * Adds OAuth headers
+	 *
+	 * @param	resource	curl resource
+	 * @param	string		the url
+	 * @param	array		the headers
+	 */
+	protected function add_oauth_headers(&$ch, $url, $oauth_headers)
 	{
 		$_h = array('Expect:');
-		$urlParts = parse_url($url);
-		$oauth = 'Authorization: OAuth realm="' . $urlParts['path'] . '",';
+		$url_parts = parse_url($url);
+		$oauth = 'Authorization: OAuth realm="' . $url_parts['path'] . '",';
 		
-		foreach ( $oauthHeaders as $name => $value )
+		foreach ( $oauth_headers as $name => $value )
 		{
 			$oauth .= "{$name}=\"{$value}\",";
 		}
-		
+				
 		$_h[] = substr($oauth, 0, -1);
 		
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $_h);
 	}
 	
-	private function _addCurl($url, $params = array())
+	/**
+	 * Adds a curl resource to the multi curl pile
+	 *
+	 * @param	string		the url
+	 * @param	array		parameters
+	 * @return	object		the curl response / Twitter_Oauth_Response
+	 */
+	protected function add_curl($url, $params = array())
 	{
-		if ( !empty($params['oauth']) )
+		if ( ! empty($params['oauth']) )
 		{
-			$this->_addOauthHeaders($this->_ch, $url, $params['oauth']);
+			$this->add_oauth_headers($this->_ch, $url, $params['oauth']);
 		}
 		
 		$ch = $this->_ch;
@@ -107,13 +135,15 @@ class Twitter_Connection {
 		
 		$response = curl_multi_add_handle($this->_mch, $ch);
 
-		if ( $response === CURLM_OK || $response === CURLM_CALL_MULTI_PERFORM )
+		if ( $response === CURLM_OK or $response === CURLM_CALL_MULTI_PERFORM )
 		{
-			do {
+			do
+			{
 				$mch = curl_multi_exec($this->_mch, $active);
-			} while ( $mch === CURLM_CALL_MULTI_PERFORM );
+			} 
+			while($mch === CURLM_CALL_MULTI_PERFORM);
 			
-			return $this->_getResponse($key);
+			return $this->get_response($key);
 		}
 		else
 		{
@@ -121,30 +151,36 @@ class Twitter_Connection {
 		}
 	}
 	
-	private function _getResponse($key = NULL)
+	/**
+	 * Returns a OAuth response.
+	 *
+	 * @param	string		the reponses key
+	 * @return	object		the curl response / Twitter_Oauth_Response
+	 */
+	protected function get_response($key = null)
 	{
-		if ( $key == NULL ) return FALSE;
+		if (empty($key)) return false;
 		
 		if ( isset($this->_responses[$key]) )
 		{
 			return $this->_responses[$key];
 		}
 		
-		$running = NULL;
+		$running = null;
 		
 		do
 		{
 			$response = curl_multi_exec($this->_mch, $running_curl);
 			
-			if ( $running !== NULL && $running_curl != $running )
+			if ( $running !== null and $running_curl != $running )
 			{
-				$this->_setResponse($key);
+				$this->set_response($key);
 				
-				if ( isset($this->_responses[$key]) )
+				if (isset($this->_responses[$key]))
 				{
 					$response = new \Twitter_Oauth_Response( (object) $this->_responses[$key] );
 					
-					if ( $response->__resp->code !== 200 )
+					if ($response->__resp->code !== 200)
 					{
 						throw new \TwitterException(isset($response->__resp->data->error) ? $response->__resp->data->error : $response->__resp->data, $response->__resp->code);
 					}
@@ -155,13 +191,19 @@ class Twitter_Connection {
 			
 			$running = $running_curl;
 			
-		} while ( $running_curl > 0);
+		} 
+		while ($running_curl > 0);
 		
 	}
 	
-	private function _setResponse($key)
+	/**
+	 * Stores the curl response.
+	 *
+	 * @param	string		the reponses key
+	 */
+	protected function set_response($key)
 	{
-		while( $done = curl_multi_info_read($this->_mch) )
+		while($done = curl_multi_info_read($this->_mch))
 		{
 			$key = (string) $done['handle'];
 			$this->_responses[$key]['data'] = curl_multi_getcontent($done['handle']);
@@ -169,9 +211,8 @@ class Twitter_Connection {
 			foreach ( $this->_properties as $curl_key => $value )
 			{
 				$this->_responses[$key][$curl_key] = curl_getinfo($done['handle'], $value);
-				
 				curl_multi_remove_handle($this->_mch, $done['handle']);
 			}
-	  }
+		}
 	}
 }
