@@ -24,6 +24,14 @@ Alternatively you can download it and extract it into `fuel/packages/twitter/`.
 
 *Oil install coming soon*
 
+## Configuration
+
+Configuration is easy.  First thing you will need to do is to register your app with twitter (if you haven't already) at [https://dev.twitter.com/apps/new.](https://dev.twitter.com/apps/new.).
+
+Next, copy the `config/twitter.php` from the package up into your `app/config/` directory.  Open it up and enter your API keys.
+
+*Note: It will use different keys for different environments by default.*
+
 ## Common Methods
 
 ### Twitter::logged\_in()
