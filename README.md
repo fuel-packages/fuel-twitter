@@ -100,7 +100,7 @@ Makes a POST request to the Twitter API using the given API path and args.  See 
 $result = Twitter::post('statuses/update', array('status' => 'Using this new awesome cool Twitter package for Fuel!'));
 ```
 
-### Twitter::seearch($args)
+### Twitter::search($args)
 
 Sends a request to the Twitter Search API with the given arguments.
 
