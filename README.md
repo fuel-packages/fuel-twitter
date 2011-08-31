@@ -30,7 +30,7 @@ Alternatively you can download it and extract it into `fuel/packages/twitter/`.
 
 ### Using Oil
 
-*Oil install coming soon*
+	$ php oil package install twitter
 
 ## Configuration
 
