@@ -1,9 +1,22 @@
-
 # Fuel Twitter Package
 
 This is a port of Elliot Haughin's CodeIgniter Twitter library.
 
 You can find his library here [http://www.haughin.com/code/twitter/](http://www.haughin.com/code/twitter/)
+
+## Installation
+
+If you are installing this as a submodule (recommended) in your git repo root, run this command:
+
+	$ git submodule add git://github.com/dhorrigan/fuel-twitter.git fuel/packages/twitter/
+
+Then you you need to initialize and update the submodule:
+
+	$ git submodule update --init fuel/packages/twitter/
+
+Alternatively you can download it and extract it into `fuel/packages/twitter/`.
+
+*Oil install coming soon*
 
 ## Example Login Contoller:
 
@@ -31,11 +44,10 @@ class Controller_Twitter extends Controller {
 		Response::redirect(Uri::create('/'));
 	}
 
-
 	public function action_callback()
 	{
 		$tokens = Twitter::get_tokens();
-		$twitter_user = Twitter::call('get', 'account/verify_credentials');
+		$twitter_user = Twitter::get('account/verify_credentials');
 
 		// Update or create the user.  We update every time a user logs in
 		// so that if they update their profile, we get that update.
