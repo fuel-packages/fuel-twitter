@@ -6,6 +6,8 @@ You can find his library here [http://www.haughin.com/code/twitter/](http://www.
 
 ## Installation
 
+### Git Submodule
+
 If you are installing this as a submodule (recommended) in your git repo root, run this command:
 
 	$ git submodule add git://github.com/dhorrigan/fuel-twitter.git fuel/packages/twitter/
@@ -14,9 +16,81 @@ Then you you need to initialize and update the submodule:
 
 	$ git submodule update --init fuel/packages/twitter/
 
+### Download
+
 Alternatively you can download it and extract it into `fuel/packages/twitter/`.
 
+### Using Oil
+
 *Oil install coming soon*
+
+## Common Methods
+
+### Twitter::logged\_in()
+
+Simply checks if the current session is logged in through Twitter.
+
+```php
+if (Twitter::logged_in())
+{
+	echo 'You are logged in!';
+}
+```
+
+### Twitter::login()
+
+Starts the login process.  Sends a request to the Twitter Oauth to log you in.
+
+```php
+if (Twitter::logged_in())
+{
+	Twitter::login();
+}
+```
+
+### Twitter::set\_callback($url)
+
+Sets the callback URL to use.  This is the URL that Twitter will redirect the user to after their credentials have been verified on twitter.com.
+
+```php
+Twitter::set_callback(Uri::create('twitter/callback'));
+```
+
+### Twitter::get\_tokens()
+
+Gets all of the user's and app's Oauth tokens.
+
+```php
+Twitter::get_tokens();
+
+/*
+Returns an array in the following format:
+array(
+	'consumer_key'    => '',
+	'consumer_secret' => '',
+	'access_key'      => '',
+	'access_secret'   => '',
+)
+*/
+```
+
+### Twitter::get($api\_path, $args = array())
+
+Makes a GET request to the Twitter API using the given API path and args.  See [https://dev.twitter.com/docs/api](https://dev.twitter.com/docs/api) for the URLs.
+
+```php
+// Verifies the user and returns all of the user's information
+$twitter_user = Twitter::get('account/verify_credentials');
+```
+
+### Twitter::post($api\_path, $args = array())
+
+Makes a POST request to the Twitter API using the given API path and args.  See [https://dev.twitter.com/docs/api](https://dev.twitter.com/docs/api) for the URLs.
+
+```php
+// Updates the current user's status (it Tweets)
+$result = Twitter::post('statuses/update', array('status' => 'Using this new awesome cool Twitter package for Fuel!'));
+```
 
 ## Example Login Contoller:
 
