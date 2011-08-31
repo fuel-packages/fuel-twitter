@@ -146,7 +146,7 @@ class Twitter_Connection {
 					
 					if ( $response->__resp->code !== 200 )
 					{
-						throw new \TwitterException($response->__resp->code.' | Request Failed: '.$response->__resp->data->error);
+						throw new \TwitterException(isset($response->__resp->data->error) ? $response->__resp->data->error : $response->__resp->data, $response->__resp->code);
 					}
 					
 					return $response;

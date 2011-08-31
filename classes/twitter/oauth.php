@@ -33,8 +33,6 @@ class Twitter_Oauth {
 	 */
 	public function __construct()
 	{
-		parent::__construct();
-		
 		$config = \Config::load('twitter', true);
 
 		$this->tokens = array(
@@ -45,8 +43,6 @@ class Twitter_Oauth {
 		);
 
 		$this->check_login();
-
-		$this->connection = new \Twitter_Connection();
 	}
 
 	/**
@@ -257,7 +253,7 @@ class Twitter_Oauth {
 	public function get_access_key()
 	{
 		$tokens = \Session::get('twitter_oauthtokens');
-		return ( $tokens === false || !isset($tokens['access_key']) || empty($tokens['access_key']) ) ? null : $tokens['access_key'];
+		return ( $tokens === null || !isset($tokens['access_key']) || empty($tokens['access_key']) ) ? null : $tokens['access_key'];
 	}
 	
 	public function set_access_key($access_key)
@@ -324,7 +320,9 @@ class Twitter_Oauth {
 	{
 		if( empty($method) || empty($url) ) return false;
 		if ( empty($params['oauth_signature']) ) $params = $this->prep_params($method, $url, $params);
-		
+
+		$this->connection = new \Twitter_Connection();
+
 		try {
 			switch ($method)
 			{
@@ -367,7 +365,7 @@ class Twitter_Oauth {
 		
 		if ( !empty($callback) )
 		{
-			$oauth['oauthcallback'] = $callback;
+			$oauth['oauth_callback'] = $callback;
 		}
 		
 		$this->set_callback(null);
@@ -377,7 +375,7 @@ class Twitter_Oauth {
 		$oauth['oauth_nonce'] 				= $this->generate_nonce();
 		$oauth['oauth_timestamp'] 			= time();
 		$oauth['oauth_signature_method'] 	= $this->signature_method;
-		$oauth['oauthversion'] 			= $this->version;
+		$oauth['oauth_version'] 			= $this->version;
 		
 		array_walk($oauth, array($this, 'encode_rfc3986'));
 		
