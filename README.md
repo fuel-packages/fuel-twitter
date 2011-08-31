@@ -7,7 +7,7 @@ You can find his library here [http://www.haughin.com/code/twitter/](http://www.
 
 ## Example Contoller:
 
-	&lt?php
+	<?php
 
 	class Controller_Twitter extends Controller {
 
