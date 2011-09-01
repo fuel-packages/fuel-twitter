@@ -438,8 +438,9 @@ class Twitter_Oauth {
 		{
 			return false;
 		}
-		
-		if ( ! empty($callback = $this->get_callback()))
+
+		$callback = $this->get_callback();
+		if ( ! empty($callback))
 		{
 			$oauth['oauth_callback'] = $callback;
 		}
