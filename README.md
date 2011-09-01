@@ -4,7 +4,7 @@ A super simple Twitter package for Fuel.  This is based off of Elliot Haughin's 
 
 ## About
 
-* Version: 1.0
+* Version: 1.0.1
 * License: MIT License
 * Author: Dan Horrigan
 * CI Library Author: Elliot Haughin

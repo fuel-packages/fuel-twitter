@@ -23,7 +23,7 @@ class Twitter {
 	/**
 	 * @var  string  $version  The current version of the package
 	 */
-	public static $version = '1.0';
+	public static $version = '1.0.1';
 
 	/**
 	 * @var  Twitter_Oauth  $oauth  Holds the Twitter_Oauth instance.
