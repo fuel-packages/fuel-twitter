@@ -6,7 +6,7 @@
 return array(
 	'active' => Fuel::$env,
 
-	'dev' => array(
+	'development' => array(
 		'twitter_consumer_key'     => '',
 		'twitter_consumer_secret'  => '',
 	),
