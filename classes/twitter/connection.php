@@ -63,7 +63,6 @@ class Twitter_Connection {
 	 */
 	public function get($url, $params)
 	{
-		$post = http_build_query($params['request'], '', '&');
 		
 		$this->init_connection($url);
 		$response = $this->add_curl($url, $params);
