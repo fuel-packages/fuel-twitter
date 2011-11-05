@@ -61,6 +61,10 @@ class Twitter_Oauth_Response {
 			return $result;
 		}
 
-		return $result[$name];
+		if (is_array($result))
+		{
+			return $result[$name];
+		}
+		return $result->{$name};
 	}
 }
