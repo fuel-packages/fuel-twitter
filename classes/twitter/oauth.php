@@ -20,7 +20,7 @@ class Twitter_Oauth {
 	protected $access_token_url   = 'http://api.twitter.com/oauth/access_token';
 	protected $signature_method   = 'HMAC-SHA1';
 	protected $version            = '1.0';
-	protected $api_url            = 'http://api.twitter.com';
+	protected $api_url            = 'http://api.twitter.com/1.1';
 	protected $search_url         = 'http://search.twitter.com/';
 	protected $callback = null;
 	protected $errors = array();
@@ -453,6 +453,7 @@ class Twitter_Oauth {
 		$oauth['oauth_timestamp']         = time();
 		$oauth['oauth_signature_method']  = $this->signature_method;
 		$oauth['oauth_version']           = $this->version;
+		$oauth['oauth_verifier']          = (isset($_GET['oauth_verifier']))? $_GET['oauth_verifier']: null;
 		
 		array_walk($oauth, array($this, 'encode_rfc3986'));
 		
